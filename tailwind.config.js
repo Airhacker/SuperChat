@@ -13,6 +13,9 @@ module.exports = {
       colors: {
         darkBg: "#191919",
         darkText: "#D4D4D4",
+        darkTextSecondary: "#838383",
+        darkBgSecondary: "#5A5A5A",
+        sidebarBg: "#202020",
       },
     },
   },

@@ -1,9 +1,10 @@
 import { FcGoogle } from "react-icons/fc";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../utils/firebase";
+import { auth, db } from "../utils/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { serverTimestamp, setDoc, doc } from "firebase/firestore";
 
 const Login = () => {
   const provider = new GoogleAuthProvider();
@@ -19,9 +20,27 @@ const Login = () => {
     }
   };
 
+  const setUser = async () => {
+    try {
+      await setDoc(doc(db, "users", user.uid), {
+        userName: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+        lastLoginTime: serverTimestamp(),
+        Notes: [],
+      });
+    } catch (error) {
+      console.log("Unable to set user");
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     try {
-      if (user) route.push("/");
+      if (user) {
+        setUser();
+        route.push("/");
+      }
     } catch (error) {}
   }, [user]);
 
