@@ -22,13 +22,16 @@ const Login = () => {
 
   const setUser = async () => {
     try {
-      await setDoc(doc(db, "users", user.uid), {
-        userName: user.displayName,
-        email: user.email,
-        photoURL: user.photoURL,
-        lastLoginTime: serverTimestamp(),
-        Notes: [],
-      });
+      await setDoc(
+        doc(db, "users", user.uid),
+        {
+          userName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+          lastLoginTime: serverTimestamp(),
+        },
+        { merge: true }
+      );
     } catch (error) {
       console.log("Unable to set user");
       console.log(error);

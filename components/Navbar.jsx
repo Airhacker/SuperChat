@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 import { getDoc, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import NotesList from "./NotesList";
 
-const Navbar = () => {
+const Navbar = ({ currentDocRef, setCurrentDocRef }) => {
   const [user, loading, error] = useAuthState(auth);
   const [isOpen, setIsOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
@@ -109,7 +109,15 @@ const Navbar = () => {
                 )}
               </div>
               <div>
-                <NotesList />
+                {user ? (
+                  <NotesList
+                    userId={user.uid}
+                    currentDocRef={currentDocRef}
+                    setCurrentDocRef={setCurrentDocRef}
+                  />
+                ) : (
+                  ""
+                )}
               </div>
 
               {/* this div hold the controls */}

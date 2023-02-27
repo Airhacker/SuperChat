@@ -9,6 +9,7 @@ import SelectedNotes from "@/components/SelectedNotes";
 export default function Home() {
   const [user, loading, error] = useAuthState(auth);
   const route = useRouter();
+  const [currentDocRef, setCurrentDocRef] = useState();
 
   useEffect(() => {
     if (!user) route.push("/login");
@@ -23,8 +24,13 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="w-screen h-screen">
-        <Navbar />
-        <SelectedNotes />
+        <Navbar
+          currentDocRef={currentDocRef}
+          setCurrentDocRef={setCurrentDocRef}
+        />
+        {user && (
+          <SelectedNotes currentDocRef={currentDocRef} userId={user.uid} />
+        )}
       </main>
     </>
   );
