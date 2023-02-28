@@ -36,6 +36,7 @@ const SelectedNotes = ({ currentDocRef, userId }) => {
     if (currentDocRef) {
       getCurrentNote();
     }
+    console.log("just to make sure");
   }, [currentDocRef]);
 
   return (

@@ -114,6 +114,8 @@ const Navbar = ({ currentDocRef, setCurrentDocRef }) => {
                     userId={user.uid}
                     currentDocRef={currentDocRef}
                     setCurrentDocRef={setCurrentDocRef}
+                    isOpen={isOpen}
+                    setIsOpen={setIsOpen}
                   />
                 ) : (
                   ""

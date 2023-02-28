@@ -9,7 +9,13 @@ import {
   collection,
 } from "firebase/firestore";
 
-const NotesList = ({ userId, currentDocRef, setCurrentDocRef }) => {
+const NotesList = ({
+  userId,
+  currentDocRef,
+  setCurrentDocRef,
+  isOpen,
+  setIsOpen,
+}) => {
   const [currentNotes, setCurrentNotes] = useState([]);
 
   const getNotes = async () => {
@@ -27,14 +33,15 @@ const NotesList = ({ userId, currentDocRef, setCurrentDocRef }) => {
   };
 
   const addPage = async () => {
-    const newPage = {
-      data: {
-        title: "Untitled",
-        content: "",
-      },
-    };
+    const docRef = await addDoc(collection(db, "users", userId, "notes"), {
+      title: "Untitled",
+      content: "",
+    });
 
-    setCurrentNotes([...currentNotes, newPage]);
+    setCurrentDoc(docRef.id);
+    setIsOpen(!isOpen);
+
+    console.log("Document written with ID: ", docRef.id);
   };
 
   const setCurrentDoc = (noteId) => {
