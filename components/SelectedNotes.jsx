@@ -4,13 +4,21 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 const SelectedNotes = ({ currentDocRef, userId }) => {
   const [currentNote, setCurrentNote] = useState(null);
+  const [currentTitle, setCurrentTitle] = useState("");
+  const [currentContent, setCurrentContent] = useState("");
 
   const getCurrentNote = async () => {
+    setCurrentTitle("");
+    setCurrentContent("");
+
     const docRef = doc(db, "users", userId, "notes", currentDocRef);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       console.log("Document data:", docSnap.data());
       setCurrentNote(docSnap.data());
+
+      setCurrentTitle(docSnap.data().title);
+      setCurrentContent(docSnap.data().content);
     } else {
       console.log("No such document!");
     }
@@ -44,10 +52,10 @@ const SelectedNotes = ({ currentDocRef, userId }) => {
       {currentNote && (
         <>
           <h1 contentEditable onInput={changeTitle}>
-            {currentNote.title}
+            {currentTitle}
           </h1>
           <p contentEditable onInput={changeContent}>
-            {currentNote.content}
+            {currentContent}
           </p>
         </>
       )}

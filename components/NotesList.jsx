@@ -2,11 +2,13 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { db } from "@/utils/firebase";
 import { useEffect, useState } from "react";
 import {
-  doc,
   onSnapshot,
   addDoc,
-  getDocs,
   collection,
+  query,
+  orderBy,
+  limit,
+  serverTimestamp,
 } from "firebase/firestore";
 
 const NotesList = ({
@@ -19,27 +21,54 @@ const NotesList = ({
   const [currentNotes, setCurrentNotes] = useState([]);
 
   const getNotes = async () => {
-    const querySnapshot = await getDocs(
-      collection(db, "users", userId, "notes")
+    setCurrentNotes([]);
+
+    const q = query(
+      collection(db, "users", userId, "notes"),
+      orderBy("createdTime", "asc"),
+      limit(50)
     );
-    querySnapshot.forEach((doc) => {
-      setCurrentNotes((currentNotes) => [
-        ...currentNotes,
-        { id: doc.id, data: doc.data() },
-      ]);
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      querySnapshot.docChanges().forEach((change) => {
+        if (change.type === "added") {
+          setCurrentNotes((currentNotes) => [
+            ...currentNotes,
+            {
+              id: change.doc.id,
+              data: change.doc.data(),
+            },
+          ]);
+        }
+        if (change.type === "removed") {
+          setCurrentNotes((currentNotes) =>
+            currentNotes.filter((note) => note.id !== change.doc.id)
+          );
+        }
+      });
     });
 
-    console.log(currentNotes);
+    // OLD CODE FOR REFERENCE
+    // const querySnapshot = await getDocs(
+    //   collection(db, "users", userId, "notes")
+    // );
+    // querySnapshot.forEach((doc) => {
+    //   setCurrentNotes((currentNotes) => [
+    //     ...currentNotes,
+    //     { id: doc.id, data: doc.data() },
+    //   ]);
+    // });
+    // console.log(currentNotes);
   };
 
   const addPage = async () => {
     const docRef = await addDoc(collection(db, "users", userId, "notes"), {
       title: "Untitled",
-      content: "",
+      content: "Type away...",
+      createdTime: serverTimestamp(),
     });
 
     setCurrentDoc(docRef.id);
-    setIsOpen(!isOpen);
 
     console.log("Document written with ID: ", docRef.id);
   };
@@ -52,7 +81,7 @@ const NotesList = ({
   useEffect(() => {
     getNotes();
     console.log("useEffect");
-  }, []);
+  }, [currentDocRef]);
 
   return (
     <div>
