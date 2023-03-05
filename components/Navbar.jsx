@@ -5,13 +5,14 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../utils/firebase";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { getDoc, doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { getDoc, doc } from "firebase/firestore";
 import NotesList from "./NotesList";
 
-const Navbar = ({ currentDocRef, setCurrentDocRef }) => {
+const Navbar = ({ currentDocRef, setCurrentDocRef, wordCount }) => {
   const [user, loading, error] = useAuthState(auth);
   const [isOpen, setIsOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [currentTitle, setCurrentTitle] = useState("");
 
   //variants for sidebar, control the animation and initial state
   const sideBarVariants = {
@@ -52,15 +53,32 @@ const Navbar = ({ currentDocRef, setCurrentDocRef }) => {
     }
   };
 
+  const getCurrentDoc = async () => {
+    const docRef = doc(db, "users", user.uid, "notes", currentDocRef);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      setCurrentTitle(docSnap.data().title);
+    } else {
+      console.log("No such document!");
+    }
+  };
+
   useEffect(() => {
     if (user) {
       getCurrentUserProfile();
     }
   }, [user]);
 
+  useEffect(() => {
+    if (currentDocRef) {
+      getCurrentDoc();
+    }
+  }, [currentDocRef]);
+
   return (
     <nav className="sticky top-0 flex content-center justify-between w-screen gap-4 p-4 border-b border-darkSecondary bg-darkBg text-darkText">
-      <div className="flex content-center">
+      <div className="flex content-center gap-4">
         <button
           className=""
           onClick={() => {
@@ -69,16 +87,14 @@ const Navbar = ({ currentDocRef, setCurrentDocRef }) => {
         >
           <AiOutlineMenu className="text-xl" />
         </button>
+
+        <div>
+          <span>{currentTitle}</span>
+        </div>
       </div>
 
-      <div>
-        {/* <span>This will hold the name of the selected notes</span> */}
-      </div>
-
-      <div className="flex content-center">
-        <button>
-          <BsThreeDots className="text-xl" />
-        </button>
+      <div className="flex content-center text-darkBgSecondary">
+        <span>({wordCount})</span>
       </div>
 
       {/* Side menu component */}
@@ -92,7 +108,7 @@ const Navbar = ({ currentDocRef, setCurrentDocRef }) => {
             className="absolute top-0 left-0 flex w-screen h-screen bg-transparent"
           >
             <div className="flex flex-col w-9/12 h-screen bg-sidebarBg">
-              <div className="flex content-center w-full gap-2 p-4 border-b border-darkText">
+              <div className="flex content-center w-full gap-2 p-4 mb-2 border-b border-darkText">
                 {currentUser ? (
                   <>
                     <img

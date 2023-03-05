@@ -10,6 +10,7 @@ export default function Home() {
   const [user, loading, error] = useAuthState(auth);
   const route = useRouter();
   const [currentDocRef, setCurrentDocRef] = useState();
+  const [wordCount, setWordCount] = useState(0);
 
   useEffect(() => {
     if (!user) route.push("/login");
@@ -27,9 +28,14 @@ export default function Home() {
         <Navbar
           currentDocRef={currentDocRef}
           setCurrentDocRef={setCurrentDocRef}
+          wordCount={wordCount}
         />
         {user && (
-          <SelectedNotes currentDocRef={currentDocRef} userId={user.uid} />
+          <SelectedNotes
+            currentDocRef={currentDocRef}
+            userId={user.uid}
+            setWordCount={setWordCount}
+          />
         )}
       </main>
     </>

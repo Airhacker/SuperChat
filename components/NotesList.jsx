@@ -1,4 +1,5 @@
 import { AiOutlinePlus } from "react-icons/ai";
+import { MdDelete } from "react-icons/md";
 import { db } from "@/utils/firebase";
 import { useEffect, useState } from "react";
 import {
@@ -9,14 +10,15 @@ import {
   orderBy,
   limit,
   serverTimestamp,
+  deleteDoc,
+  doc,
 } from "firebase/firestore";
 
 const NotesList = ({
   userId,
   currentDocRef,
   setCurrentDocRef,
-  isOpen,
-  setIsOpen,
+  setWordCount,
 }) => {
   const [currentNotes, setCurrentNotes] = useState([]);
 
@@ -73,6 +75,20 @@ const NotesList = ({
     console.log("Document written with ID: ", docRef.id);
   };
 
+  // function to delete a doc
+  const deleteSelectedDoc = async (noteId) => {
+    if (currentDocRef === noteId) {
+      setCurrentDocRef("");
+    }
+
+    if (noteId) {
+      await deleteDoc(doc(db, "users", userId, "notes", noteId));
+    }
+
+    console.log("Document deleted");
+  };
+
+  // function to set doc based on click
   const setCurrentDoc = (noteId) => {
     console.log(noteId);
     setCurrentDocRef(noteId);
@@ -88,18 +104,25 @@ const NotesList = ({
       {currentNotes &&
         currentNotes.map((note) => {
           return (
-            <button
+            <div
               key={note.id}
-              className="flex content-center w-full px-4 pt-4 text-base text-darkTextSecondary"
-              onClick={() => setCurrentDoc(note.id)}
+              className="flex content-center justify-between w-full px-4 py-2 text-base border-b border-current text-darkTextSecondary "
             >
-              {note.data.title}
-            </button>
+              {/* holds the title of the doc */}
+              <div onClick={() => setCurrentDoc(note.id)}>
+                {note.data.title}
+              </div>
+
+              {/* delete button for the doc*/}
+              <button onClick={() => deleteSelectedDoc(note.id)}>
+                <MdDelete />
+              </button>
+            </div>
           );
         })}
 
       <button
-        className="flex content-center w-full gap-2 p-4 text-base text-darkTextSecondary"
+        className="flex content-center w-full gap-2 p-2 text-base text-darkTextSecondary"
         onClick={addPage}
       >
         <AiOutlinePlus className="self-center" />
