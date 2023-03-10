@@ -80,7 +80,6 @@ const Navbar = ({ currentDocRef, setCurrentDocRef, wordCount }) => {
     <nav className="sticky top-0 flex content-center justify-between w-screen gap-4 p-4 border-b border-darkSecondary bg-darkBg text-darkText">
       <div className="flex content-center gap-4">
         <button
-          className=""
           onClick={() => {
             setIsOpen(!isOpen);
           }}
@@ -93,7 +92,7 @@ const Navbar = ({ currentDocRef, setCurrentDocRef, wordCount }) => {
         </div>
       </div>
 
-      <div className="flex content-center text-darkBgSecondary">
+      <div className="flex content-center px-2 text-darkBgSecondary">
         <span>({wordCount})</span>
       </div>
 
@@ -108,7 +107,7 @@ const Navbar = ({ currentDocRef, setCurrentDocRef, wordCount }) => {
             className="absolute top-0 left-0 flex w-screen h-screen bg-transparent"
           >
             <div className="flex flex-col w-9/12 h-screen bg-sidebarBg">
-              <div className="flex content-center w-full gap-2 p-4 mb-2 border-b border-darkText">
+              <div className="flex content-center w-full gap-2 p-4 mb-2">
                 {currentUser ? (
                   <>
                     <img
@@ -143,7 +142,7 @@ const Navbar = ({ currentDocRef, setCurrentDocRef, wordCount }) => {
                 {user ? (
                   <button
                     onClick={userSignOut}
-                    className="flex content-center w-full gap-2 p-4 text-base text-darkTextSecondary"
+                    className="flex content-center w-full gap-2 p-4 text-base text-darkTextSecondary hover:text-darkBgSecondary"
                   >
                     <TbDoorExit className="self-center" />
                     Sign Out

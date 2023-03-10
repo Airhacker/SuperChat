@@ -106,15 +106,25 @@ const NotesList = ({
           return (
             <div
               key={note.id}
-              className="flex content-center justify-between w-full px-4 py-2 text-base border-b border-current text-darkTextSecondary "
+              className={`flex content-center justify-between w-full px-4 py-2 text-base border-b border-current  ${
+                note.id === currentDocRef
+                  ? "bg-selectedBg text-darkText"
+                  : "text-darkTextSecondary"
+              }`}
             >
               {/* holds the title of the doc */}
-              <div onClick={() => setCurrentDoc(note.id)}>
+              <div
+                className="w-full cursor-pointer hover:text-darkBgSecondary"
+                onClick={() => setCurrentDoc(note.id)}
+              >
                 {note.data.title}
               </div>
 
               {/* delete button for the doc*/}
-              <button onClick={() => deleteSelectedDoc(note.id)}>
+              <button
+                onClick={() => deleteSelectedDoc(note.id)}
+                className="text-base hover:text-red-600"
+              >
                 <MdDelete />
               </button>
             </div>
@@ -122,7 +132,7 @@ const NotesList = ({
         })}
 
       <button
-        className="flex content-center w-full gap-2 p-2 text-base text-darkTextSecondary"
+        className="flex content-center w-full gap-2 px-4 py-2 text-base text-darkTextSecondary hover:text-darkBgSecondary"
         onClick={addPage}
       >
         <AiOutlinePlus className="self-center" />

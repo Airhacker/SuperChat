@@ -16,6 +16,7 @@ module.exports = {
         darkTextSecondary: "#838383",
         darkBgSecondary: "#5A5A5A",
         sidebarBg: "#202020",
+        selectedBg: "#2C2C2C",
       },
     },
   },
