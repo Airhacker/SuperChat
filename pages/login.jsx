@@ -1,7 +1,11 @@
 import { FcGoogle } from "react-icons/fc";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../utils/firebase";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  signInAnonymously,
+} from "firebase/auth";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { serverTimestamp, setDoc, doc } from "firebase/firestore";
@@ -44,12 +48,15 @@ const Login = () => {
         setUser();
         route.push("/");
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log("Unable to set user");
+      console.log(error);
+    }
   }, [user]);
 
   return (
-    <div className="flex flex-col content-center justify-center w-screen h-screen gap-8 text-center bg-darkBg text-darkText">
-      <h1 className="text-4xl">Sign in</h1>
+    <div className="flex flex-col content-center justify-center w-screen h-screen gap-16 text-center bg-darkBg text-darkText">
+      <h1 className="text-4xl">Sign in to write some notes 📝</h1>
       <button
         onClick={signInWithGoogle}
         className="flex content-center self-center justify-center w-1/2 gap-2 p-2 text-black bg-white rounded-md justify-self-center"
